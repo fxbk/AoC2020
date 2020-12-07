@@ -1,4 +1,6 @@
 import re
+import sys
+sys.setrecursionlimit(10000)
 
 file = open('input.txt', 'r')
 input = file.read().split('\n')
@@ -10,21 +12,33 @@ for key, value in rules_dict.items():
             value[idx] = value[idx].replace(c, '')
     rules_dict[key] = value
 
-print(rules_dict)
-def recursive(dict, key):
-    if 'shiny gold' in dict[key]:
-        return True
-    for value in dict[key]:
-        # print(value)
-        if value != 'no other':
-            recursive(dict, value)
+rules_dict['no other'] = []
+
+def recursive(dict, values):
+    if len(values) == 0:
+        return []
+    else:
+        return [values[0]] + recursive(dict, list(set(values[1:] + dict[values[0]])))
 
 counter = 0
 for key in rules_dict.keys():
-    if key == 'shiny gold':
-        counter += 1
-        continue
-    if recursive(rules_dict, key):
+    print(recursive(rules_dict, rules_dict[key]))
+    if 'shiny gold' in recursive(rules_dict, rules_dict[key]):
         counter += 1
 
 print(counter)
+# def recursive(dict, key):
+#     if 'shiny gold' in dict[key]:
+#         return True
+#     else:
+#         return False or recursive(dict, key, dict[key])
+#
+# counter = 0
+# for key in rules_dict.keys():
+#     if key == 'shiny gold':
+#         counter += 1
+#         continue
+#     if recursive(rules_dict, key):
+#         counter += 1
+#
+# print(counter)
