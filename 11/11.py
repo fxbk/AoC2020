@@ -1,6 +1,6 @@
 import copy
 
-file = open('input.txt', 'r')
+file = open('input2.txt', 'r')
 input = file.read().split()
 data = []
 for idx, s in enumerate(input):
@@ -67,4 +67,56 @@ for row in range(len(final_seating)):
 
 print(f'Solution part 1: {occupied_seats}')
 
+# Part 2
+
+
+def get_adjoints_directional(row, column, data):
+    directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+    empty = 0
+    for dir in directions:
+        x = row
+        y = column
+        out = True
+        while 0 <= y + dir[0] <= len(data)-1 and 0 <= x + dir[1] <= len(data[0])-1:
+            y += dir[0]
+            x += dir[1]
+            if data[y][x] == 'L':
+                empty += 1
+                out = False
+                break
+            if data[y][x] == '#':
+                out = False
+                break
+        if out:
+            empty += 1
+    return empty
+
+
+def simulate_seating_part2(data):
+    while True:
+        out = copy.deepcopy(data)
+        for row in range(len(data)):
+            for column in range(len(data[0])):
+                if out[row][column] == '.':
+                    continue
+                empty = get_adjoints_directional(row, column, data)
+                if empty == 8:
+                    out[row][column] = '#'
+                if 8 - empty >= 5:
+                    out[row][column] = 'L'
+        print(out)
+        if out == data:
+            break
+        else:
+            data = out
+    return out
+
+final_seating2 = simulate_seating_part2(data)
+occupied_seats_2 = 0
+for row in range(len(final_seating2)):
+    for column in range(len(final_seating2[0])):
+        if final_seating2[row][column] == '#':
+            occupied_seats_2 += 1
+
+print(f'Solution part 1: {occupied_seats_2}')
 
