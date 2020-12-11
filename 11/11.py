@@ -1,6 +1,6 @@
 import copy
 
-file = open('input2.txt', 'r')
+file = open('input.txt', 'r')
 input = file.read().split()
 data = []
 for idx, s in enumerate(input):
@@ -8,7 +8,6 @@ for idx, s in enumerate(input):
     for c in s:
         chars.append(c)
     data.append(chars)
-print(data)
 
 
 def get_adjoints(row, column, data):
@@ -74,8 +73,8 @@ def get_adjoints_directional(row, column, data):
     directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
     empty = 0
     for dir in directions:
-        x = row
-        y = column
+        x = column
+        y = row
         out = True
         while 0 <= y + dir[0] <= len(data)-1 and 0 <= x + dir[1] <= len(data[0])-1:
             y += dir[0]
@@ -104,12 +103,12 @@ def simulate_seating_part2(data):
                     out[row][column] = '#'
                 if 8 - empty >= 5:
                     out[row][column] = 'L'
-        print(out)
         if out == data:
             break
         else:
             data = out
     return out
+
 
 final_seating2 = simulate_seating_part2(data)
 occupied_seats_2 = 0
@@ -118,5 +117,5 @@ for row in range(len(final_seating2)):
         if final_seating2[row][column] == '#':
             occupied_seats_2 += 1
 
-print(f'Solution part 1: {occupied_seats_2}')
+print(f'Solution part 2: {occupied_seats_2}')
 
