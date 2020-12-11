@@ -1,3 +1,5 @@
+import copy
+
 file = open('input.txt', 'r')
 input = file.read().split()
 data = []
@@ -7,7 +9,6 @@ for idx, s in enumerate(input):
         chars.append(c)
     data.append(chars)
 print(data)
-import copy
 
 
 def get_adjoints(row, column, data):
@@ -66,7 +67,4 @@ for row in range(len(final_seating)):
 
 print(f'Solution part 1: {occupied_seats}')
 
-'''            if row == 0 and column == 0:
-                adjacent = [(0, 1), (1, 0), (1, 1)]
-            elif row == 0 and column != len(data[0])-1:
-                adjacent = [(0, 1), (1, 0), (1, 1)]'''
+
