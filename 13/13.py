@@ -16,11 +16,11 @@ for bus in busses_small:
 
 print(f'Solutions part 1: {busses_small[np.argmin(next_departures)] * (min(next_departures) - arrival)}')
 
-# Part 2 
+# Part 2
 busses = [x if x == 'x' else int(x) for x in busses]
 max_value = max(busses_small)
 max_value_idx = busses.index(max_value)
-t = max_value - max_value_idx
+t = (100000000000000 + (max_value - (100000000000000 % max_value))) + (max_value - max_value_idx)
 
 while True:
     counter = 0
