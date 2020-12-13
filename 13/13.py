@@ -16,7 +16,43 @@ for bus in busses_small:
 
 print(f'Solutions part 1: {busses_small[np.argmin(next_departures)] * (min(next_departures) - arrival)}')
 
+# Part 2 
+busses = [x if x == 'x' else int(x) for x in busses]
+max_value = max(busses_small)
+max_value_idx = busses.index(max_value)
+t = max_value - max_value_idx
 
+while True:
+    counter = 0
+    for idx, x in enumerate(busses):
+        if x == 'x':
+            counter += 1
+            continue
+        elif (t + idx) % x == 0:
+            counter += 1
+        else:
+            break
+    if counter == len(busses):
+        break
+    else:
+        t += max_value
+
+print(t)
+
+'''
+55
+114
+173
+232
+291
+350
+409
+468
+527
+'''
+
+# First solution, but it will takes for ever (9.921098947525024 seconds per 1 million runs)
+'''
 def check_sequence(plan, goal):
     counter = 0
     start_idx = len(plan) - len(goal)
@@ -27,15 +63,13 @@ def check_sequence(plan, goal):
             if int(x) in plan[start_idx + idx]:
                 counter += 1
     return counter == len(goal)
-
-
 plan = []
 busses_array = np.array(busses_small)
 t = 0
 import time
 start_time = time.time()
 while True:
-    if t % 1000000000 == 0:
+    if t % 1000000 == 0:
         print(t)
         print(time.time() - start_time)
     if t > len(busses):
@@ -50,3 +84,4 @@ while True:
     t += 1
 
 print(t-len(busses))
+'''
