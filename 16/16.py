@@ -1,4 +1,4 @@
-file = open('input2.txt', 'r')
+file = open('input.txt', 'r')
 input = file.read()
 input = input.split('\n\n')
 
@@ -13,9 +13,9 @@ nearby_tickets = input[2].split('\n')
 nearby_tickets = [x.split(',') for x in nearby_tickets[1:]]
 
 
-def check_value(value, fields_values_dict):
+def check_value(value, dict):
     out = []
-    for ranges in fields_values_dict.values():
+    for ranges in dict.values():
         for range in ranges:
             if int(range[0]) <= value <= int(range[1]):
                 out.append(True)
@@ -43,28 +43,46 @@ for ticket in nearby_tickets:
             valid = False
     if valid:
         cleaned_tickets.append(ticket)
+
 import numpy as np
 fields_in_right_order = []
 
 
-def combine_checks(list_of_lists):
+def check_value_part2(value, dict):
     out = []
-    for list in list_of_lists:
-        tmp = []
-        for idx in np.arange(len(list))[::2]:
-            tmp.append(list[idx] or list[idx+1])
-        out.append(tmp)
+    for ranges in dict.values():
+        valid = False
+        for range in ranges:
+            if int(range[0]) <= value <= int(range[1]):
+                valid = True
+        out.append(valid)
     return out
 
-
-for field, ranges in fields_values_dict.items():
-    valid_list = []
+sums = []
+for idx in range(len(cleaned_tickets[0])):
+    tmp = []
     for ticket in cleaned_tickets:
-        for value in ticket:
-            value = int(value)
-            valid_list.append(check_value(value, fields_values_dict))
-    valid_list = combine_checks(valid_list)
-    valid_matrix = np.matrix(valid_list)
-    fields_in_right_order.append(fields[np.argmax(np.sum(valid_matrix, axis=0))])
+        tmp.append(check_value_part2(int(ticket[idx]), fields_values_dict))
+    sums.append(np.sum(np.matrix(tmp), axis=0))
+
+sums.sort(key=lambda x: np.sum(x))
+
+indices = []
+indices_left = [i for i in range(20)]
+for sum in sums:
+    # x = [x for i, x in enumerate(sum.tolist()[0]) if i not in indices]
+    x = sum.tolist()[0]
+    idxs = [i for i, value in enumerate(x) if value == 190]
+    idx = (set(idxs) - set(indices)).pop()
+    fields_in_right_order.append(fields[idx])
+    indices.append(idx)
+    # indices_left = [i for i in range(20) if i not in indices]
 
 print(fields_in_right_order)
+results = []
+result = 1
+for idx, cls in enumerate(fields_in_right_order):
+    if 'departure' in cls:
+        results.append(int(my_ticket[idx]))
+        result *= int(my_ticket[idx])
+print(result)
