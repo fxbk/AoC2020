@@ -79,9 +79,25 @@ def calculate_values_advanced(calculation):
         idx += 1
     return calculation[0]
 
+def calculate_values_part2(calculation):
+    idx_open_brackets = []
+    idx_closed_brackets = []
+    for idx in range(len(calculation)):
+        if calculation[idx] == '(':
+            idx_open_brackets.append(idx)
+        elif calculation[idx] == ')':
+            idx_closed_brackets.append(idx)
+    for idx in range(len(idx_open_brackets)):
+        part_calculation = calculation[idx_open_brackets[- (1 + idx)]+1:idx_closed_brackets[idx]]
+        calculation[idx_open_brackets[- (1 + idx)]] = calculate_values_advanced(part_calculation)
+        del calculation[idx_open_brackets[- (1 + idx)]+1:idx_closed_brackets[idx]+1]
+
+    return calculate_values_advanced(calculation)
+
 result = 0
 for calculation in input:
-    new_value = calculate_values_advanced(calculation)
+    calculation = list(calculation)
+    new_value = calculate_values_part2(calculation)
     print(new_value)
     result += new_value
 
