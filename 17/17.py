@@ -1,7 +1,7 @@
 import copy
 import itertools
 
-file = open('input2.txt', 'r')
+file = open('input.txt', 'r')
 input = file.read()
 input = input.split('\n')
 
@@ -12,10 +12,7 @@ for y, row in enumerate(input):
             active.append((x, y, 0))
 
 
-input = [[list('...') for i in range(4)], [list(line) for line in input] + [list('...')], [list('...') for i in range(4)]]
-
-
-def get_number_of_active_neighbors(system, x, y, z):
+def get_number_of_active_neighbors(active_list, x, y, z):
     number_of_active_neighbors = 0
     neighbors = list(itertools.product([-1, 0, 1], [-1, 0, 1], [-1, 0, 1]))
     del neighbors[neighbors.index((0, 0, 0))]
@@ -23,22 +20,25 @@ def get_number_of_active_neighbors(system, x, y, z):
         x_idx = x + neighbor[0]
         y_idx = y + neighbor[1]
         z_idx = z + neighbor[2]
-        if 0 <= x_idx < len(system[0][0]) and 0 <= y_idx < len(system[0]) and 0 <= z_idx < len(system):
-            if system[z_idx][y_idx][x_idx] == '#':
-                number_of_active_neighbors += 1
+        if (x_idx, y_idx, z_idx) in active_list:
+            number_of_active_neighbors += 1
     return number_of_active_neighbors
 
 
-out = copy.deepcopy(input)
-for z, dim in enumerate(input):
-    for y, row in enumerate(dim):
-        for x, elem in enumerate(row):
-            numb_neigbbors = get_number_of_active_neighbors(input, x, y, z)
-            if elem == '#' and numb_neigbbors not in [2, 3]:
-                out[z][y][x] = '.'
-            elif elem == '.' and numb_neigbbors == 3:
-                out[z][y][x] = '#'
+x_max = len(input[0])
+y_max = len(input)
+z_max = 0
 
-print(out[0])
-print(out[1])
-print(out[2])
+for cycle in range(1, 7):
+    out = copy.deepcopy(active)
+    for z in range(-cycle, cycle + 1):
+        for y in range(-cycle, y_max + cycle + 1):
+            for x in range(-cycle, x_max + cycle + 1):
+                numb_neigbbors = get_number_of_active_neighbors(active, x, y, z)
+                if (x, y, z) in active and numb_neigbbors not in [2, 3]:
+                    del out[out.index((x, y, z))]
+                elif (x, y, z) not in active and numb_neigbbors == 3:
+                    out.append((x, y, z))
+    active = out
+
+print(len(out))
