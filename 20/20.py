@@ -1,7 +1,7 @@
 import copy
 
 
-file = open('input2.txt', 'r')
+file = open('input.txt', 'r')
 input = file.read()
 tiles = input.split('\n\n')
 
@@ -38,8 +38,31 @@ class Tile:
     def flip_vertically(self):
         self.bottom = self.bottom[::-1]
         self.top = self.top[::-1]
+        tmp_right = copy.copy(self.right)
+        self.right = self.left
+        self.left = tmp_right
         self.transformation.append('flip_vertically')
 
 
 tiles = [Tile(tile_string) for tile_string in tiles]
-print(tiles[0].left)
+
+corner_tiles = []
+result = 1
+for base_tile in tiles:
+    matching_tiles = 0
+    for tile in tiles:
+        if base_tile.id == tile.id:
+            continue
+        for rotation in range(4):
+            for flip in range(2):
+                if base_tile.top == tile.top or base_tile.top == tile.right or base_tile.top == tile.bottom or \
+                        base_tile.top == tile.left:
+                    matching_tiles += 1
+                base_tile.flip_vertically()
+            base_tile.rotate_clockwise()
+    if matching_tiles == 2:
+        corner_tiles.append(base_tile.id)
+        result *= int(base_tile.id)
+
+print(corner_tiles)
+print(f'Solution part 1: {result}')
